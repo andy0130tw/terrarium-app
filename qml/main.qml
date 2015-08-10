@@ -7,8 +7,9 @@ import DocumentHandler 1.0
 
 Window {
     id: root
-    width: Screen.width
-    height: Screen.height
+    // let it has a smaller size
+    width: 1080
+    height: 600
     visible: true
     title: "Terrarium - UI Prototyping Tool for Coders"
 
@@ -21,8 +22,10 @@ Window {
         'macx': { 'lineNumberSpacing': -1, 'lineNumberPadding' : 20, 'defaultFont': 'Courier New' },
         'android': { 'lineNumberSpacing': 0, 'lineNumberPadding' : 20, 'defaultFont': 'Droid Sans Mono' },
         'linux': { 'lineNumberSpacing': 0, 'lineNumberPadding' : 20, 'defaultFont': 'Droid Sans Mono' },
-        'default': { 'lineNumberSpacing': 0, 'lineNumberPadding' : 20, 'defaultFont': 'Droid Sans Mono' },
+        'default': { 'lineNumberSpacing': 0, 'lineNumberPadding' : 20, 'defaultFont': '"Roboto Mono", Menlo, Inconsolata, Consolas, monospace' },
     }
+    // lineNumberSpacing issue: 2 for Roboto Mono; -1 for consolas;
+    // solved by using the same font family on both
     property variant lineNumberPadding: platformSetting[os_type[platform]]['lineNumberPadding']
     property variant lineNumberSpacing: platformSetting[os_type[platform]]['lineNumberSpacing']
     property variant scaleRatio: Screen.pixelDensity.toFixed(0) / 5
@@ -84,6 +87,17 @@ Window {
         state: "view"
         id: navibar 
         z: 2
+
+        Text {
+            anchors {
+                verticalCenter: navibar.verticalCenter
+                right: navibar.right
+                rightMargin: 12
+            }
+            color: "#99000000"
+            font.pixelSize: 10
+            text: 'Modified for NTUOSC Workshop 2015 on Windows / v1.5-win32'
+        }
     }
 
     Item {
@@ -101,7 +115,7 @@ Window {
             anchors.bottom: Screen.top
             anchors.bottomMargin: errorMessage.text == "" ? 0 : -height
             width: parent.width
-            height: errorMessage.height
+            height: errorMessage.height * 2
 
             Behavior on anchors.bottomMargin {
                 NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
@@ -122,8 +136,8 @@ Window {
             property variant errorLineNumber: 0
             onStatusChanged: {
                 if (viewLoader.status == Loader.Error) {
-                    errorMessage.text = viewLoader.errorString().replace(/http:\/\/.*:5000\/\?.*?:/g, "Line: ");
-
+                    // errorMessage.text = viewLoader.errorString().replace(/http:\/\/.*:5000\/\?.*?:/g, "Line: ");
+                    errorMessage.text = "There is some error in your code. Please check the error in Qt Creator."
                     // restart http server when connection refused
                     var connectionRefused = /Connection refused/;
                     if (connectionRefused.test(errorMessage.text)) {
@@ -133,8 +147,8 @@ Window {
                         reloadView();
                     }
 
-                    errorLineNumber = errorMessage.text.match(/^Line: (.*?) /)[1];
-                    lineNumberRepeater.itemAt(errorLineNumber - 1).bgcolor = 'red'
+                    // errorLineNumber = errorMessage.text.match(/^Line: (.*?) /)[1];
+                   //  lineNumberRepeater.itemAt(errorLineNumber - 1).bgcolor = 'red'
                 } else {
                     errorMessage.text = "";
                     if (errorLineNumber > 0)
@@ -187,7 +201,7 @@ Window {
             anchors { fill: parent; }
             flickableDirection: Flickable.VerticalFlick
             contentWidth: parent.width
-            contentHeight: editor.height
+            contentHeight: editor.height + 40
             clip: true
 
             Column {
@@ -202,8 +216,9 @@ Window {
                         width: 20
                         text: index + 1
                         color: 'lightgray'
+                        font.family: platformSetting[os_type[platform]]['defaultFont']
                         font.pointSize: editor.font.pointSize
-                        horizontalAlignment: TextEdit.AlignHCenter
+                        horizontalAlignment: TextEdit.AlignRight
                         Rectangle {
                             id: rect
                             color: 'transparent'
@@ -234,7 +249,7 @@ Window {
                     left: lineNumber.right; right: parent.right; top: parent.top
                 }
                 wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere;
-                renderType: Text.NativeRendering
+                // renderType: Text.NativeRendering
                 onTextChanged: timer.restart();
 
                 onSelectedTextChanged: {
@@ -252,7 +267,7 @@ Window {
                         var leftBrace = /{/, rightBrace = /}/;
                         if (!leftBrace.test(currentLine)) {
                             editor.remove(cursorPosition, cursorPosition - currentLine.length);
-                            currentLine = currentLine.toString().replace(/ {1,4}$/, "");
+                            currentLine = currentLine.toString().replace(/ {1,2}$/, "");
                             editor.insert(cursorPosition, currentLine);
                         }
                     }
@@ -266,7 +281,7 @@ Window {
                     editor.insert(cursorPosition, "\n")
                     var whitespaceAppend = currentLine.match(new RegExp(/^[ \t]*/))  // whitespace
                     if (leftBrace.test(currentLine)) // indent
-                        whitespaceAppend += "    ";
+                        whitespaceAppend += "  ";
                     editor.insert(cursorPosition, whitespaceAppend)
                 }
 
@@ -275,7 +290,7 @@ Window {
                 color: '#c5c8c6'
                 selectionColor: '#0C75BC'
                 selectByMouse: true
-                font { pointSize: 18; family: platformSetting[os_type[platform]]['defaultFont'] }
+                font { pointSize: 14; family: platformSetting[os_type[platform]]['defaultFont'] }
 
                 text: documentHandler.text
                 inputMethodHints: Qt.ImhNoPredictiveText
@@ -284,9 +299,9 @@ Window {
                     id: documentHandler
                     target: editor
                     Component.onCompleted: {
-                        documentHandler.text = "import QtQuick 2.0\n\nRectangle { \n    color: '#FEEB75'" +
-                            "\n    Text { \n        anchors.centerIn: parent" +
-                            "\n        text: 'Hello, World!' \n    } \n}"
+                        documentHandler.text = "import QtQuick 2.0\n\nRectangle { \n  color: '#FEEB75'" +
+                            "\n  Text { \n    anchors.centerIn: parent" +
+                            "\n    text: 'Hello, World!' \n  } \n}"
                     }
                 }
 

@@ -4,35 +4,38 @@ import QtGraphicalEffects 1.0
 Rectangle {
     id: navigationBar
     width: parent.width
-    height: 44 * scaleRatio
+    height: 56 * scaleRatio
     anchors {
         bottom: parent.bottom
         left: parent.left
     }
     color: "white"
 
+    property double tabWidth : 160
+    property double tabHeight: 40
+
     Rectangle {
         id: repeater
         border.color: "#007edf"
-        width: 240 * scaleRatio
-        height: 29 * scaleRatio 
+        width: tabWidth * 3 * scaleRatio
+        height: tabHeight * scaleRatio
         anchors.centerIn: parent 
         radius: 5 
         smooth: true
         visible: false
         Row {
             Rectangle {
-                width: 80 *scaleRatio ; height: 29 * scaleRatio
+                width: tabWidth * scaleRatio ; height: 40 * scaleRatio
                 color: splitState == 'editor' ? "#007edf" : "transparent"
                 Text {
                     text: "Editor"
                     color: splitState == 'editor' ? "white" : '#007edf'
                     anchors.centerIn: parent
-                    font.pointSize: 15
+                    font.pointSize: 12
                 }
             }
             Rectangle {
-                width: 80 * scaleRatio; height: 29 * scaleRatio
+                width: tabWidth * scaleRatio; height: 40 * scaleRatio
                 border.width: 1
                 border.color: "#007edf"
                 color: splitState == 'splitted' ? "#007edf" : "transparent"
@@ -40,17 +43,17 @@ Rectangle {
                     text: "Split"
                     color: splitState == 'splitted' ? "white" : "#007edf"
                     anchors.centerIn: parent
-                    font.pointSize: 15
+                    font.pointSize: 12
                 }
             }
             Rectangle {
-                width: 80 * scaleRatio; height: 29 * scaleRatio
+                width: tabWidth * scaleRatio; height: 40 * scaleRatio
                 color: splitState == 'viewer' ? "#007edf" : "transparent"
                 Text {
                     text: "Viewer"
                     color: splitState == 'viewer' ? "white" : "#007edf"
                     anchors.centerIn: parent
-                    font.pointSize: 15
+                    font.pointSize: 12
                 }
             }
         }
@@ -74,18 +77,18 @@ Rectangle {
         anchors.centerIn: parent
         visible: (parent.state === 'view')
         MouseArea {
-            width: 80 * scaleRatio
-            height: 29 * scaleRatio
+            width: tabWidth * scaleRatio
+            height: tabHeight * scaleRatio
             onPressed: splitState = 'editor'
         }
         MouseArea {
-            width: 80 * scaleRatio
-            height: 29 * scaleRatio
+            width: tabWidth * scaleRatio
+            height: tabHeight * scaleRatio
             onPressed: splitState = 'splitted'
         }
         MouseArea {
-            width: 80 * scaleRatio
-            height: 29 * scaleRatio
+            width: tabWidth * scaleRatio
+            height: tabHeight * scaleRatio
             onPressed: splitState = 'viewer'
         }
     }
@@ -113,11 +116,11 @@ Rectangle {
     Row {
         anchors.centerIn: parent
         visible: (parent.state === 'selection')
-        spacing: 20 * scaleRatio
+        spacing: 40 * scaleRatio
         Text {
             visible: (editor.selectionStart !== editor.selectionEnd)
             color: "#007edf"
-            font.pointSize: 17
+            font.pointSize: 14
             text: "Cut"
             MouseArea {
                 anchors.fill: parent
@@ -128,7 +131,7 @@ Rectangle {
         Text {
             visible: (editor.selectionStart !== editor.selectionEnd)
             color: "#007edf"
-            font.pointSize: 17
+            font.pointSize: 14
             text: "Copy"
             MouseArea {
                 anchors.fill: parent
@@ -142,7 +145,7 @@ Rectangle {
         Text {
             visible: (editor.selectionStart === editor.selectionEnd)
             color: "#007edf"
-            font.pointSize: 17
+            font.pointSize: 14
             text: "Select"
             MouseArea {
                 anchors.fill: parent
@@ -153,7 +156,7 @@ Rectangle {
         Text {
             visible: (editor.selectionStart === editor.selectionEnd)
             color: "#007edf"
-            font.pointSize: 17
+            font.pointSize: 14
             text: "Select All"
             MouseArea {
                 anchors.fill: parent
@@ -164,7 +167,7 @@ Rectangle {
         Text {
             visible: (editor.canPaste === true)
             color: "#007edf"
-            font.pointSize: 17
+            font.pointSize: 14
             text: "Paste"
             MouseArea {
                 anchors.fill: parent

@@ -43,3 +43,4 @@ qt.conf
 # Distribution
 dist
 release
+object_script.Terrarium.*

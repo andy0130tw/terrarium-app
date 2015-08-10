@@ -21,6 +21,13 @@ int main(int argc, char *argv[])
     app.setOrganizationName("terrariumapp");
     app.setOrganizationDomain("terrariumapp.com");
 
+    // custom font
+    // http://stackoverflow.com/a/12179548/2281355
+    QFont font;
+    font.setFamily("Roboto, 'Noto Sans CJK TC Regular', 'Microsoft JhengHei'");
+    font.setPixelSize(14);
+    app.setFont(font);
+
 #if defined(Q_OS_MACX)
     int platformId = 0;
 #elif defined(Q_OS_IOS)
