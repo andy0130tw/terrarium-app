@@ -39,3 +39,7 @@ Terrarium.xcodeproj
 terrarium_plugin_import.cpp
 terrarium_qml_plugin_import.cpp
 qt.conf
+
+# Distribution
+dist
+release
