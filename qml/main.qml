@@ -133,11 +133,25 @@ Window {
         Loader {
             id: viewLoader
             anchors.fill: parent
-            property variant errorLineNumber: 0
+            property var errorLineNumber: []
             onStatusChanged: {
-                if (viewLoader.status == Loader.Error) {
-                    // errorMessage.text = viewLoader.errorString().replace(/http:\/\/.*:5000\/\?.*?:/g, "Line: ");
-                    errorMessage.text = "There is some error in your code. Please check the error in Qt Creator."
+                if (viewLoader.status == Loader.Error || 1) {
+                    try {
+                      errorMessage.text = viewLoader.errorString().replace(/http:\/\/.*:5000\/\?.*?:/mg, "Line: ");
+                      errorLineNumber.length = 0
+                      errorMessage.text = errorMessage.text.replace(/^Line: (.*?) /mg, function(match, p1) {
+                          errorLineNumber.push(parseInt(p1));
+                          lineNumberRepeater.itemAt(p1 - 1).state = 'error';
+                          // restyling
+                          return 'Line ' + p1 + ': ';
+                      });
+                    } catch(e) {
+                      console.log(e);
+                      errorMessage.text = 'There is some error in your code. '
+                        + 'Please check it in Qt Creator or a debugger. '
+                        + 'To show the error message directly, you need to patch a component of Qt.';
+                    }
+
                     // restart http server when connection refused
                     var connectionRefused = /Connection refused/;
                     if (connectionRefused.test(errorMessage.text)) {
@@ -146,13 +160,12 @@ Window {
                         saveContent();
                         reloadView();
                     }
-
-                    // errorLineNumber = errorMessage.text.match(/^Line: (.*?) /)[1];
-                   //  lineNumberRepeater.itemAt(errorLineNumber - 1).bgcolor = 'red'
                 } else {
                     errorMessage.text = "";
-                    if (errorLineNumber > 0)
-                        lineNumberRepeater.itemAt(errorLineNumber - 1).bgcolor = 'transparent'
+                    for (var i = 0, c = errorLineNumber.length; i < c; i++) {
+                        lineNumberRepeater.itemAt(errorLineNumber[i] - 1).state = '';
+                    }
+                    errorLineNumber.length = 0;
                 }
             }
         }
@@ -212,10 +225,17 @@ Window {
                     id: lineNumberRepeater
                     model: editor.lineCount
                     Text {
-                        property alias bgcolor: rect.color
-                        width: 20
+                        id: lineNumberText
+                        width: 30
                         text: index + 1
-                        color: 'lightgray'
+                        color: "lightgray"
+                        states: [
+                          State {
+                            name: 'error'
+                            PropertyChanges { target: lineNumberText; color: 'white' }
+                            PropertyChanges { target: rect; color: '#f92672' }
+                          }
+                        ]
                         font.family: platformSetting[os_type[platform]]['defaultFont']
                         font.pointSize: editor.font.pointSize
                         horizontalAlignment: TextEdit.AlignRight
@@ -223,7 +243,7 @@ Window {
                             id: rect
                             color: 'transparent'
                             anchors.fill: parent
-                            opacity: 0.5
+                            z: -1
                         }
                     }
                 }

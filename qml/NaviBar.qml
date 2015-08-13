@@ -4,56 +4,60 @@ import QtGraphicalEffects 1.0
 Rectangle {
     id: navigationBar
     width: parent.width
-    height: 56 * scaleRatio
+    height: Math.round(56 * scaleRatio)
     anchors {
         bottom: parent.bottom
         left: parent.left
     }
     color: "white"
 
-    property double tabWidth : 160
-    property double tabHeight: 40
+    property int tabWidth: Math.round(160 * scaleRatio)
+    property int tabHeight: Math.round(40 * scaleRatio)
+    property string tabActiveBg: "#007edf"
+    property string tabActiveFg: "white"
+    property int fontPointSize: 14
 
     Rectangle {
         id: repeater
-        border.color: "#007edf"
-        width: tabWidth * 3 * scaleRatio
-        height: tabHeight * scaleRatio
+        border.color: tabActiveBg
+        width: tabWidth * 3
+        height: tabHeight
         anchors.centerIn: parent 
         radius: 5 
         smooth: true
         visible: false
+
         Row {
             Rectangle {
-                width: tabWidth * scaleRatio ; height: 40 * scaleRatio
-                color: splitState == 'editor' ? "#007edf" : "transparent"
+                width: tabWidth; height: tabHeight
+                color: splitState == 'editor' ? tabActiveBg : "transparent"
                 Text {
                     text: "Editor"
-                    color: splitState == 'editor' ? "white" : '#007edf'
+                    color: splitState == 'editor' ? tabActiveFg : tabActiveBg
                     anchors.centerIn: parent
-                    font.pointSize: 12
+                    font.pointSize: fontPointSize
                 }
             }
             Rectangle {
-                width: tabWidth * scaleRatio; height: 40 * scaleRatio
+                width: tabWidth; height: tabHeight
                 border.width: 1
-                border.color: "#007edf"
-                color: splitState == 'splitted' ? "#007edf" : "transparent"
+                border.color: tabActiveBg
+                color: splitState == 'splitted' ? tabActiveBg : "transparent"
                 Text {
                     text: "Split"
-                    color: splitState == 'splitted' ? "white" : "#007edf"
+                    color: splitState == 'splitted' ? tabActiveFg : tabActiveBg
                     anchors.centerIn: parent
-                    font.pointSize: 12
+                    font.pointSize: fontPointSize
                 }
             }
             Rectangle {
-                width: tabWidth * scaleRatio; height: 40 * scaleRatio
-                color: splitState == 'viewer' ? "#007edf" : "transparent"
+                width: tabWidth; height: tabHeight
+                color: splitState == 'viewer' ? tabActiveBg : "transparent"
                 Text {
                     text: "Viewer"
-                    color: splitState == 'viewer' ? "white" : "#007edf"
+                    color: splitState == 'viewer' ? tabActiveFg : tabActiveBg
                     anchors.centerIn: parent
-                    font.pointSize: 12
+                    font.pointSize: fontPointSize
                 }
             }
         }
@@ -77,18 +81,18 @@ Rectangle {
         anchors.centerIn: parent
         visible: (parent.state === 'view')
         MouseArea {
-            width: tabWidth * scaleRatio
-            height: tabHeight * scaleRatio
+            width: tabWidth
+            height: tabHeight
             onPressed: splitState = 'editor'
         }
         MouseArea {
-            width: tabWidth * scaleRatio
-            height: tabHeight * scaleRatio
+            width: tabWidth
+            height: tabHeight
             onPressed: splitState = 'splitted'
         }
         MouseArea {
-            width: tabWidth * scaleRatio
-            height: tabHeight * scaleRatio
+            width: tabWidth
+            height: tabHeight
             onPressed: splitState = 'viewer'
         }
     }
@@ -119,7 +123,7 @@ Rectangle {
         spacing: 40 * scaleRatio
         Text {
             visible: (editor.selectionStart !== editor.selectionEnd)
-            color: "#007edf"
+            color: tabActiveBg
             font.pointSize: 14
             text: "Cut"
             MouseArea {
@@ -130,8 +134,8 @@ Rectangle {
         }
         Text {
             visible: (editor.selectionStart !== editor.selectionEnd)
-            color: "#007edf"
-            font.pointSize: 14
+            color: tabActiveBg
+            font.pointSize: fontPointSize
             text: "Copy"
             MouseArea {
                 anchors.fill: parent
@@ -144,8 +148,8 @@ Rectangle {
         }
         Text {
             visible: (editor.selectionStart === editor.selectionEnd)
-            color: "#007edf"
-            font.pointSize: 14
+            color: tabActiveBg
+            font.pointSize: fontPointSize
             text: "Select"
             MouseArea {
                 anchors.fill: parent
@@ -155,8 +159,8 @@ Rectangle {
         }
         Text {
             visible: (editor.selectionStart === editor.selectionEnd)
-            color: "#007edf"
-            font.pointSize: 14
+            color: tabActiveBg
+            font.pointSize: fontPointSize
             text: "Select All"
             MouseArea {
                 anchors.fill: parent
@@ -166,8 +170,8 @@ Rectangle {
         }
         Text {
             visible: (editor.canPaste === true)
-            color: "#007edf"
-            font.pointSize: 14
+            color: tabActiveBg
+            font.pointSize: fontPointSize
             text: "Paste"
             MouseArea {
                 anchors.fill: parent
