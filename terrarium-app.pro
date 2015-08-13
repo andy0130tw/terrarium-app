@@ -27,6 +27,8 @@ HEADERS += qhttpserver/src/qhttpserver.h \
 INCLUDEPATH += ./qhttpserver/http-parser/
 RESOURCES += qml/assets.qrc
 
+RC_ICONS = platform/windows/icon.ico
+
 android {
     ANDROID_PACKAGE_SOURCE_DIR = ./platform/android
 }
