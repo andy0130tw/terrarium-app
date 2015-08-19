@@ -135,7 +135,7 @@ Window {
             anchors.fill: parent
             property var errorLineNumber: []
             onStatusChanged: {
-                if (viewLoader.status == Loader.Error || 1) {
+                if (viewLoader.status == Loader.Error) {
                     try {
                       errorMessage.text = viewLoader.errorString().replace(/http:\/\/.*:5000\/\?.*?:/mg, "Line: ");
                       errorLineNumber.length = 0
